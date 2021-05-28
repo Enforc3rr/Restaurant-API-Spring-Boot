@@ -1,18 +1,24 @@
 package com.rsa.resturantapi.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//@Entity
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
 public class CustomerEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String firstName;
     private String lastName;
     private String mobileNumber;
-    @OneToOne
-    private OrderEntity orderEntity;
+
+    @OneToMany(mappedBy = "customer",cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.PERSIST,CascadeType.DETACH}
+            ,targetEntity = OrderEntity.class)
+    @JsonIgnore //Using JSON ignore to avoid same issue as that of item
+    // Just bcuz @JsonIgnore doesn't display the list of orders associated with the customer but it doesn't mean that it is not present there.
+    private List<OrderEntity> orderEntity;
 
     public CustomerEntity() { }
 
@@ -20,6 +26,14 @@ public class CustomerEntity {
         this.firstName = firstName;
         this.lastName = lastName;
         this.mobileNumber = mobileNumber;
+    }
+
+    public List<OrderEntity> getOrderEntity() {
+        return orderEntity;
+    }
+
+    public void setOrderEntity(List<OrderEntity> orderEntity) {
+        this.orderEntity = orderEntity;
     }
 
     public long getId() {

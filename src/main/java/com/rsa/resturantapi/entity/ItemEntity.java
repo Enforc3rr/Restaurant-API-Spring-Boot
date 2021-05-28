@@ -14,16 +14,17 @@ public class ItemEntity {
     private String dishName;
     private int dishPrice;
 
-    @ManyToMany(targetEntity = OrderEntity.class,cascade = CascadeType.ALL)
+    @ManyToMany(targetEntity = OrderEntity.class,
+            cascade = { CascadeType.DETACH, CascadeType.MERGE , CascadeType.PERSIST , CascadeType.REFRESH}
+            ,fetch = FetchType.LAZY)
     @JoinTable(
             name="order_item",
             joinColumns = @JoinColumn(name = "item_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id")
     )
+    //used Jsonignore here , As upon loading orders it was loading up the items which in return was also provoking the order .
     @JsonIgnore
     private List<OrderEntity> orderEntity;
-
-
 
     public ItemEntity() { }
 

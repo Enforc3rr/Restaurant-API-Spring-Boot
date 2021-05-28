@@ -15,6 +15,12 @@ public class OrderService {
     OrderRepo orderRepo;
     @Autowired
     ItemService itemService;
+    @Autowired
+    CustomerService customerService;
+
+    public OrderEntity findOrder(Long orderId){
+        return orderRepo.findById(orderId).get();
+    }
 
     public OrderEntity addItemsToOrder(List<Long> itemsId){
         OrderEntity orderEntity = new OrderEntity();
@@ -25,6 +31,7 @@ public class OrderService {
             total = total + itemEntity.getDishPrice();
             itemEntityList.add(itemEntity);
         }
+        orderEntity.setCustomer(customerService.findOneCustomer(1));
         orderEntity.setItemsList(itemEntityList);
         orderEntity.setTotalPriceOfDish(total);
         orderRepo.save(orderEntity);
